@@ -9,8 +9,9 @@ enum class Status {
 
 data class Survivor(val name: String, val wounds: Int = 0, val status: Status = ALIVE) {
 
-    fun applyWound(): Survivor = when(wounds.inc()) {
-        2 -> this.copy(wounds = wounds.inc(), status = DEAD)
+    fun applyWound(): Survivor = when {
+        wounds.inc() == 2 -> this.copy(wounds = wounds.inc(), status = DEAD)
+        wounds.inc() > 2 -> this
         else -> this.copy(wounds = wounds.inc())
     }
 }

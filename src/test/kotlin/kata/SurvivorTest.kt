@@ -19,4 +19,13 @@ class SurvivorTest {
 
         woundedSurvivor.status shouldBe DEAD
     }
+
+    @Test
+    fun `should not receive additional wounds when survivor is already dead`() {
+        val survivor = Survivor(name = "Maverick Steel", wounds = 2, status = DEAD)
+
+        val woundedSurvivor = survivor.applyWound()
+
+        woundedSurvivor.wounds shouldBe 2
+    }
 }
