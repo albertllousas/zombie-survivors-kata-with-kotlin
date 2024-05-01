@@ -1,6 +1,7 @@
 package kata
 
 import io.kotest.matchers.shouldBe
+import kata.Equipment.*
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
@@ -27,5 +28,14 @@ class SurvivorTest {
         val woundedSurvivor = survivor.applyWound()
 
         woundedSurvivor.wounds shouldBe 2
+    }
+
+    @Test
+    fun `should be able to carry up equipment`() {
+        val survivor = Survivor(name = "Maverick Steel")
+
+        val result = survivor.equip(Equipment("Baseball bat", InHand))
+
+        result.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand))
     }
 }
