@@ -1,7 +1,9 @@
 package kata
 
+import arrow.core.flatMap
+import arrow.core.left
 import io.kotest.matchers.shouldBe
-import kata.Equipment.*
+import kata.Equipment.InHand
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
@@ -36,6 +38,18 @@ class SurvivorTest {
 
         val result = survivor.equip(Equipment("Baseball bat", InHand))
 
-        result.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand))
+        result.isRight() shouldBe true
+        result.onRight { it.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand)) }
+    }
+
+    @Test
+    fun `should fail trying to equip more than two items in hand`() {
+        val survivor = Survivor(name = "Maverick Steel")
+
+        val result = survivor.equip(Equipment("Baseball bat", InHand))
+            .flatMap { it.equip(Equipment("Pistol", InHand)) }
+            .flatMap { it.equip(Equipment("Knife", InHand)) }
+
+        result shouldBe MaxEquipmentInHandReached.left()
     }
 }
