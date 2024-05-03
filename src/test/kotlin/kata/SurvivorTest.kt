@@ -39,7 +39,7 @@ class SurvivorTest {
 
     @Test
     fun `should be able to carry up equipment`() {
-        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
+        val survivor = Survivor(name = "Maverick Steel")
 
         val result = survivor.equip(Equipment("Baseball bat", InHand))
 
@@ -49,7 +49,7 @@ class SurvivorTest {
 
     @Test
     fun `should fail trying to equip more than two items in hand`() {
-        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
+        val survivor = Survivor(name = "Maverick Steel")
 
         val result = survivor.equip(Equipment("Baseball bat", InHand))
             .flatMap { it.equip(Equipment("Pistol", InHand)) }
@@ -59,15 +59,14 @@ class SurvivorTest {
     }
 
     @Test
-    fun `should fail trying to equip more than 3 items in reserve`() {
-        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
+    fun `should fail trying to equip items in reserve if max capacity is reached`() {
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 2)
 
         val result = survivor.equip(Equipment("Baseball bat", InReserve))
             .flatMap { it.equip(Equipment("Frying pan", InReserve)) }
             .flatMap { it.equip(Equipment("Bottled Water", InReserve)) }
-            .flatMap { it.equip(Equipment("Molotov", InReserve)) }
 
-        result shouldBe MaxEquipmentInReserveReached.left()
+        result shouldBe MaxEquipmentCapacityReached.left()
     }
 
     @Test

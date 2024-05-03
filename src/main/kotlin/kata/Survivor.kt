@@ -20,7 +20,7 @@ data class Equipment(val name: String, val location: Location) {
 
 sealed class EquipError
 data object MaxEquipmentInHandReached : EquipError()
-data object MaxEquipmentInReserveReached : EquipError()
+data object MaxEquipmentCapacityReached : EquipError()
 
 data class Survivor(
     val name: String,
@@ -39,16 +39,15 @@ data class Survivor(
         ).discardItemIfMaxCapacityReached()
     }
 
-    private fun discardItemIfMaxCapacityReached() =
-        if (numOfItemsCanCarry < this.equippedWith.size) {
-            val firstInReserve = equippedWith.firstOrNull { it.location == InReserve }
-            val filteredList = firstInReserve?.let { equippedWith.filterNot { it == firstInReserve } } ?: equippedWith
-            this.copy(equippedWith = filteredList)
-        } else this
-
     fun equip(equipment: Equipment): Either<EquipError, Survivor> = when {
+        equippedWith.count().inc() > numOfItemsCanCarry -> MaxEquipmentCapacityReached.left()
         equippedWith.count { it.location == InHand } >= 2 -> MaxEquipmentInHandReached.left()
-        equippedWith.count { it.location == InReserve } >= 3 -> MaxEquipmentInReserveReached.left()
         else -> this.copy(equippedWith = equippedWith + equipment).right()
     }
+
+    private fun discardItemIfMaxCapacityReached() = if (numOfItemsCanCarry < this.equippedWith.size) {
+        val firstInReserve = equippedWith.firstOrNull { it.location == InReserve }
+        val filteredList = firstInReserve?.let { equippedWith.filterNot { it == firstInReserve } } ?: equippedWith
+        this.copy(equippedWith = filteredList)
+    } else this
 }
