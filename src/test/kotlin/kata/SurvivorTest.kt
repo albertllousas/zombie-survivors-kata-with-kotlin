@@ -3,7 +3,7 @@ package kata
 import arrow.core.flatMap
 import arrow.core.left
 import io.kotest.matchers.shouldBe
-import kata.Equipment.InHand
+import kata.Equipment.*
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
@@ -51,5 +51,17 @@ class SurvivorTest {
             .flatMap { it.equip(Equipment("Knife", InHand)) }
 
         result shouldBe MaxEquipmentInHandReached.left()
+    }
+
+    @Test
+    fun `should fail trying to equip more than 3 items in reserve`() {
+        val survivor = Survivor(name = "Maverick Steel")
+
+        val result = survivor.equip(Equipment("Baseball bat", InReserve))
+            .flatMap { it.equip(Equipment("Frying pan", InReserve)) }
+            .flatMap { it.equip(Equipment("Bottled Water", InReserve)) }
+            .flatMap { it.equip(Equipment("Molotov", InReserve)) }
+
+        result shouldBe MaxEquipmentInReserveReached.left()
     }
 }

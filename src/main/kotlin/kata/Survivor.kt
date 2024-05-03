@@ -13,12 +13,12 @@ enum class Status {
 data class Equipment(val name: String, val location: Equipment.Location) {
     sealed class Location
     data object InHand : Location()
-    data object InBackpack : Location()
+    data object InReserve : Location()
 }
 
 sealed class EquipError
-
 data object MaxEquipmentInHandReached : EquipError()
+data object MaxEquipmentInReserveReached : EquipError()
 
 data class Survivor(
     val name: String,
@@ -35,6 +35,7 @@ data class Survivor(
 
     fun equip(equipment: Equipment): Either<EquipError, Survivor> = when {
         equippedWith.count { it.location == Equipment.InHand } >= 2 -> MaxEquipmentInHandReached.left()
+        equippedWith.count { it.location == Equipment.InReserve } >= 3 -> MaxEquipmentInReserveReached.left()
         else -> this.copy(equippedWith = equippedWith + equipment).right()
     }
 }
