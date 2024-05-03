@@ -11,12 +11,16 @@ class SurvivorTest {
 
     @Test
     fun `should create a survivor`() {
-        Survivor(name = "Maverick Steel") shouldBe Survivor(name = "Maverick Steel", wounds = 0)
+        Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5) shouldBe Survivor(
+            name = "Maverick Steel",
+            wounds = 0,
+            numOfItemsCanCarry = 5
+        )
     }
 
     @Test
     fun `should dies immediately when receives two wounds`() {
-        val survivor = Survivor(name = "Maverick Steel")
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
 
         val woundedSurvivor = survivor.applyWound().applyWound()
 
@@ -25,7 +29,7 @@ class SurvivorTest {
 
     @Test
     fun `should not receive additional wounds when survivor is already dead`() {
-        val survivor = Survivor(name = "Maverick Steel", wounds = 2, status = DEAD)
+        val survivor = Survivor(name = "Maverick Steel", wounds = 2, status = DEAD, numOfItemsCanCarry = 5)
 
         val woundedSurvivor = survivor.applyWound()
 
@@ -34,7 +38,7 @@ class SurvivorTest {
 
     @Test
     fun `should be able to carry up equipment`() {
-        val survivor = Survivor(name = "Maverick Steel")
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
 
         val result = survivor.equip(Equipment("Baseball bat", InHand))
 
@@ -44,7 +48,7 @@ class SurvivorTest {
 
     @Test
     fun `should fail trying to equip more than two items in hand`() {
-        val survivor = Survivor(name = "Maverick Steel")
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
 
         val result = survivor.equip(Equipment("Baseball bat", InHand))
             .flatMap { it.equip(Equipment("Pistol", InHand)) }
@@ -55,7 +59,7 @@ class SurvivorTest {
 
     @Test
     fun `should fail trying to equip more than 3 items in reserve`() {
-        val survivor = Survivor(name = "Maverick Steel")
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
 
         val result = survivor.equip(Equipment("Baseball bat", InReserve))
             .flatMap { it.equip(Equipment("Frying pan", InReserve)) }
@@ -63,5 +67,14 @@ class SurvivorTest {
             .flatMap { it.equip(Equipment("Molotov", InReserve)) }
 
         result shouldBe MaxEquipmentInReserveReached.left()
+    }
+
+    @Test
+    fun `each wound reduces the number of pieces of Equipment they can carry by 1`() {
+        val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
+
+        val woundedSurvivor = survivor.applyWound()
+
+        woundedSurvivor.numOfItemsCanCarry shouldBe 4
     }
 }

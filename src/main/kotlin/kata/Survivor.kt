@@ -24,15 +24,15 @@ data class Survivor(
     val name: String,
     val wounds: Int = 0,
     val status: Status = ALIVE,
-    val equippedWith: List<Equipment> = emptyList()
+    val equippedWith: List<Equipment> = emptyList(),
+    val numOfItemsCanCarry: Int = 5
 ) {
 
     fun applyWound(): Survivor = when {
         wounds.inc() == 2 -> this.copy(wounds = wounds.inc(), status = DEAD)
         wounds.inc() > 2 -> this
-        else -> this.copy(wounds = wounds.inc())
+        else -> this.copy(wounds = wounds.inc(), numOfItemsCanCarry = numOfItemsCanCarry.dec())
     }
-
     fun equip(equipment: Equipment): Either<EquipError, Survivor> = when {
         equippedWith.count { it.location == Equipment.InHand } >= 2 -> MaxEquipmentInHandReached.left()
         equippedWith.count { it.location == Equipment.InReserve } >= 3 -> MaxEquipmentInReserveReached.left()
