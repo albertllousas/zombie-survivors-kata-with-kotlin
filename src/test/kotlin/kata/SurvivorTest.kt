@@ -3,7 +3,8 @@ package kata
 import arrow.core.flatMap
 import arrow.core.left
 import io.kotest.matchers.shouldBe
-import kata.Equipment.*
+import kata.Equipment.InHand
+import kata.Equipment.InReserve
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
@@ -70,11 +71,28 @@ class SurvivorTest {
     }
 
     @Test
-    fun `each wound reduces the number of pieces of Equipment they can carry by 1`() {
+    fun `each wound reduces the number of pieces of equipment they can carry by one`() {
         val survivor = Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5)
 
         val woundedSurvivor = survivor.applyWound()
 
         woundedSurvivor.numOfItemsCanCarry shouldBe 4
+    }
+
+    @Test
+    fun `after a wound, if the number of items can carry is excessive, the first one in reserve will be discarded`() {
+        val survivor = Survivor(
+            name = "Maverick Steel",
+            numOfItemsCanCarry = 2,
+            equippedWith = listOf(
+                Equipment("Baseball bat", InHand),
+                Equipment("Frying pan", InReserve),
+                Equipment("Molotov", InReserve)
+            )
+        )
+        val woundedSurvivor = survivor.applyWound()
+        woundedSurvivor.equippedWith shouldBe listOf(
+            Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve)
+        )
     }
 }
