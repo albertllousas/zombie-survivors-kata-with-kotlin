@@ -12,10 +12,6 @@ enum class Status {
     ALIVE, DEAD
 }
 
-enum class Level {
-    BLUE, YELLOW, ORANGE, RED
-}
-
 data class Equipment(val name: String, val location: Location) {
     sealed class Location
     data object InHand : Location()

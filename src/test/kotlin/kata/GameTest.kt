@@ -6,14 +6,14 @@ import arrow.core.right
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
-import kata.Status.*
+import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
 class GameTest {
 
     @Test
     fun `should begin with zero survivors`() {
-        Game.start() shouldBe Game(survivors = listOf(), ONGOING)
+        Game.start() shouldBe Game(survivors = listOf(), status = ONGOING, level = Level.BLUE)
     }
 
     @Test

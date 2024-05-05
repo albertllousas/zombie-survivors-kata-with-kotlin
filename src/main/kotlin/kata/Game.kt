@@ -10,9 +10,13 @@ enum class GameStatus {
     ONGOING, ENDED
 }
 
+enum class Level {
+    BLUE, YELLOW, ORANGE, RED
+}
+
 data object SurvivorNameAlreadyUsed
 
-data class Game(val survivors: List<Survivor>, val status: GameStatus) {
+data class Game(val survivors: List<Survivor>, val status: GameStatus, val level: Level = Level.BLUE) {
 
     fun add(survivor: Survivor): Either<SurvivorNameAlreadyUsed, Game> =
         if (survivors.firstOrNull { it.name == survivor.name } != null) SurvivorNameAlreadyUsed.left()
