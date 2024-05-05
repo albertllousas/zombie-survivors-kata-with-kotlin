@@ -4,13 +4,15 @@ import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import io.kotest.matchers.shouldBe
+import kata.GameStatus.ENDED
+import kata.GameStatus.ONGOING
 import org.junit.jupiter.api.Test
 
 class GameTest {
 
     @Test
     fun `should begin with zero survivors`() {
-        Game.start() shouldBe Game(survivors = listOf())
+        Game.start() shouldBe Game(survivors = listOf(), ONGOING)
     }
 
     @Test
@@ -20,7 +22,7 @@ class GameTest {
 
         val gameWithSurvivors = game.add(survivor)
 
-        gameWithSurvivors shouldBe Game(survivors = listOf(survivor)).right()
+        gameWithSurvivors shouldBe Game(survivors = listOf(survivor), ONGOING).right()
     }
 
     @Test
@@ -31,5 +33,15 @@ class GameTest {
         val gameWithSurvivors = game.add(survivor).flatMap { it.add(survivor) }
 
         gameWithSurvivors shouldBe SurvivorNameAlreadyUsed.left()
+    }
+
+    @Test
+    fun `should end immediately if all of its survivors have died`() {
+        val survivor = Survivor("Maverick Steel", wounds = 1)
+        val game = Game(survivors = listOf(survivor), status = ONGOING)
+
+        val result = game.runTurn("Maverick Steel") { it.applyWound().right() }
+
+        result shouldBe Game(survivors = listOf(survivor), status = ENDED).right()
     }
 }

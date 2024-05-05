@@ -18,7 +18,7 @@ data class Equipment(val name: String, val location: Location) {
     data object InReserve : Location()
 }
 
-sealed class EquipError
+sealed class EquipError : GameError
 data object MaxEquipmentInHandReached : EquipError()
 data object MaxEquipmentCapacityReached : EquipError()
 
