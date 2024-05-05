@@ -12,6 +12,10 @@ enum class Status {
     ALIVE, DEAD
 }
 
+enum class Level {
+    BLUE, YELLOW, ORANGE, RED
+}
+
 data class Equipment(val name: String, val location: Location) {
     sealed class Location
     data object InHand : Location()
@@ -27,7 +31,9 @@ data class Survivor(
     val wounds: Int = 0,
     val status: Status = ALIVE,
     val equippedWith: List<Equipment> = emptyList(),
-    val numOfItemsCanCarry: Int = 5
+    val numOfItemsCanCarry: Int = 5,
+    val experience : Int = 0,
+    val level: Level = Level.BLUE,
 ) {
 
     fun applyWound(): Survivor = when {

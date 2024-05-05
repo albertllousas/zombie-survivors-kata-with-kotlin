@@ -5,6 +5,8 @@ import arrow.core.left
 import io.kotest.matchers.shouldBe
 import kata.Equipment.InHand
 import kata.Equipment.InReserve
+import kata.Level.*
+import kata.Status.ALIVE
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
@@ -12,10 +14,14 @@ class SurvivorTest {
 
     @Test
     fun `should create a survivor`() {
-        Survivor(name = "Maverick Steel", numOfItemsCanCarry = 5) shouldBe Survivor(
+        Survivor(name = "Maverick Steel") shouldBe Survivor(
             name = "Maverick Steel",
             wounds = 0,
-            numOfItemsCanCarry = 5
+            numOfItemsCanCarry = 5,
+            status = ALIVE,
+            equippedWith = emptyList(),
+            experience = 0,
+            level = BLUE
         )
     }
 
