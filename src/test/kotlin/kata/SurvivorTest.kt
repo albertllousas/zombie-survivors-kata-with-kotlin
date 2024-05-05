@@ -100,4 +100,13 @@ class SurvivorTest {
             Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve)
         )
     }
+
+    @Test
+    fun `should gain one experience each time kills a zombie`() {
+        val survivor = Survivor("Max Ryder")
+
+        val result = survivor.killZombie()
+
+        result.experience shouldBe 1
+    }
 }

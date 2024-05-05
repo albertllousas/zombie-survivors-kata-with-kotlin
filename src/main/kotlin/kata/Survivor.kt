@@ -56,4 +56,6 @@ data class Survivor(
         val filteredList = firstInReserve?.let { equippedWith.filterNot { it == firstInReserve } } ?: equippedWith
         this.copy(equippedWith = filteredList)
     } else this
+
+    fun killZombie(): Survivor = this.copy(experience = experience.inc())
 }
