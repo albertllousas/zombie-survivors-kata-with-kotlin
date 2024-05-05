@@ -61,7 +61,8 @@ data class Survivor(
 
     private fun levelUp() = when {
         experience in 7..18 -> Level.YELLOW
-        experience > 18 -> Level.ORANGE
+        experience in 19 .. 42 -> Level.ORANGE
+        experience >42  -> Level.RED
         else -> level
     }.let { this.copy(level = it) }
 }
