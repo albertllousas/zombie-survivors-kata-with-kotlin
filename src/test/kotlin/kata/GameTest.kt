@@ -6,6 +6,7 @@ import arrow.core.right
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
+import kata.Status.*
 import org.junit.jupiter.api.Test
 
 class GameTest {
@@ -42,6 +43,6 @@ class GameTest {
 
         val result = game.runTurn("Maverick Steel") { it.applyWound().right() }
 
-        result shouldBe Game(survivors = listOf(survivor), status = ENDED).right()
+        result shouldBe Game(survivors = listOf(survivor.copy(wounds = 2, status = DEAD)), status = ENDED).right()
     }
 }

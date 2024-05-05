@@ -22,12 +22,13 @@ data class Game(val survivors: List<Survivor>, val status: GameStatus) {
         survivors.find { it.name == survivorName }
             ?.let { old ->
                 actionOn(old)
-                    .map { updated -> this.copy(survivors = survivors.map { if(old.name == it.name) updated else old }) }
-            } ?: this.right()
-            .map { checkGameStatus() }
+                    .map { updated -> this.copy(survivors = survivors.map { if (old.name == it.name) updated else old }) }
+            }
+            ?.map { it.checkGameStatus() }
+            ?: this.right()
 
     private fun checkGameStatus() =
-        if(this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this
+        if (this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this
 
     companion object {
         fun start(): Game = Game(survivors = listOf(), status = ONGOING)
