@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import kata.Equipment.InHand
 import kata.Equipment.InReserve
+import kata.Level.YELLOW
 import kata.Status.ALIVE
 import kata.Status.DEAD
 
@@ -57,5 +58,7 @@ data class Survivor(
         this.copy(equippedWith = filteredList)
     } else this
 
-    fun killZombie(): Survivor = this.copy(experience = experience.inc())
+    fun killZombie(): Survivor = this.copy(experience = experience.inc()).let { it.levelUp() }
+
+    private fun levelUp() = if(experience > 6) this.copy(level = YELLOW) else this
 }

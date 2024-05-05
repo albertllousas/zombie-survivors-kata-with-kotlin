@@ -109,4 +109,13 @@ class SurvivorTest {
 
         result.experience shouldBe 1
     }
+
+    @Test
+    fun `should advance ('level up') to level Yellow when exceeds 6 Experience`() {
+        val survivor = Survivor("Max Ryder", experience = 6)
+
+        val result = survivor.killZombie()
+
+        result.level shouldBe YELLOW
+    }
 }
