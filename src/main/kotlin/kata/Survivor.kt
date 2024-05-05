@@ -5,7 +5,6 @@ import arrow.core.left
 import arrow.core.right
 import kata.Equipment.InHand
 import kata.Equipment.InReserve
-import kata.Level.YELLOW
 import kata.Status.ALIVE
 import kata.Status.DEAD
 
@@ -33,7 +32,7 @@ data class Survivor(
     val status: Status = ALIVE,
     val equippedWith: List<Equipment> = emptyList(),
     val numOfItemsCanCarry: Int = 5,
-    val experience : Int = 0,
+    val experience: Int = 0,
     val level: Level = Level.BLUE,
 ) {
 
@@ -60,5 +59,9 @@ data class Survivor(
 
     fun killZombie(): Survivor = this.copy(experience = experience.inc()).let { it.levelUp() }
 
-    private fun levelUp() = if(experience > 6) this.copy(level = YELLOW) else this
+    private fun levelUp() = when {
+        experience in 7..18 -> Level.YELLOW
+        experience > 18 -> Level.ORANGE
+        else -> level
+    }.let { this.copy(level = it) }
 }
