@@ -6,14 +6,15 @@ import arrow.core.right
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
+import kata.Level.*
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 
 class GameTest {
 
     @Test
-    fun `should begin with zero survivors`() {
-        Game.start() shouldBe Game(survivors = listOf(), status = ONGOING, level = Level.BLUE)
+    fun `should begin with default values`() {
+        Game.start() shouldBe Game(survivors = listOf(), status = ONGOING, level = BLUE)
     }
 
     @Test
@@ -44,5 +45,16 @@ class GameTest {
         val result = game.runTurn("Maverick Steel") { it.applyWound().right() }
 
         result shouldBe Game(survivors = listOf(survivor.copy(wounds = 2, status = DEAD)), status = ENDED).right()
+    }
+
+    @Test
+    fun `should keep the game level always equal to the level of the highest living survivor's level`() {
+        val survivor = Survivor("Max Ryder", experience = 6)
+        val game = Game(survivors = listOf(survivor), status = ONGOING, level = BLUE)
+
+        val result = game.runTurn("Max Ryder") { it.killZombie().right() }
+
+        result.isRight() shouldBe true
+        result.onRight { it.level shouldBe YELLOW }
     }
 }

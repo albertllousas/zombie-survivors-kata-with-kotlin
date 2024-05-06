@@ -28,11 +28,13 @@ data class Game(val survivors: List<Survivor>, val status: GameStatus, val level
                 actionOn(old)
                     .map { updated -> this.copy(survivors = survivors.map { if (old.name == it.name) updated else old }) }
             }
-            ?.map { it.checkGameStatus() }
+            ?.map { it.adjustStatus() }
+            ?.map { it.adjustLevel() }
             ?: this.right()
 
-    private fun checkGameStatus() =
-        if (this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this
+    private fun adjustLevel() = this.copy(level = this.survivors.maxByOrNull { it.level.ordinal }?.level ?: Level.BLUE)
+
+    private fun adjustStatus() = if (this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this
 
     companion object {
         fun start(): Game = Game(survivors = listOf(), status = ONGOING)
