@@ -9,6 +9,7 @@ import kata.Status.ALIVE
 import kata.Status.DEAD
 import java.time.Clock
 import java.time.LocalDateTime
+import java.time.LocalDateTime.*
 
 enum class Status {
     ALIVE, DEAD
@@ -40,12 +41,12 @@ data class Survivor(
         wounds.inc() == 2 -> this.copy(
             wounds = wounds.inc(),
             status = DEAD,
-            events = events + Wounded(LocalDateTime.now(clock), this.name)
+            events = events + SurvivorWounded(now(clock), this.name) + SurvivorDied(now(clock), this.name)
         )
         wounds.inc() < 2 -> this.copy(
             wounds = wounds.inc(),
             numOfItemsCanCarry = numOfItemsCanCarry.dec(),
-            events = events + Wounded(LocalDateTime.now(clock), this.name)
+            events = events + SurvivorWounded(now(clock), this.name)
         ).discardItemIfMaxCapacityReached()
         else -> this
     }
@@ -55,7 +56,7 @@ data class Survivor(
         equippedWith.count { it.location == InHand } >= 2 -> MaxEquipmentInHandReached.left()
         else -> this.copy(
             equippedWith = equippedWith + equipment,
-            events = events + EquipmentAdded(LocalDateTime.now(clock), this.name, equipment.name)
+            events = events + EquipmentAdded(now(clock), this.name, equipment.name)
         ).right()
     }
 

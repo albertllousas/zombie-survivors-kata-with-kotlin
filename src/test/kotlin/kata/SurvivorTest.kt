@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalDateTime.*
 import java.time.ZoneId
 
 class SurvivorTest {
@@ -43,8 +44,9 @@ class SurvivorTest {
 
         woundedSurvivor.status shouldBe DEAD
         woundedSurvivor.events shouldBe listOf(
-            Wounded(on = LocalDateTime.parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
-            Wounded(on = LocalDateTime.parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel")
+            SurvivorWounded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
+            SurvivorWounded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
+            SurvivorDied(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel")
         )
     }
 
@@ -73,7 +75,7 @@ class SurvivorTest {
             it.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand))
             it.events shouldBe listOf(
                 EquipmentAdded(
-                    on = LocalDateTime.parse("2007-12-03T10:15:30.00"),
+                    on = parse("2007-12-03T10:15:30.00"),
                     survivor = "Maverick Steel",
                     equipment = "Baseball bat"
                 )

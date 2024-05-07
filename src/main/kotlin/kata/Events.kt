@@ -12,4 +12,6 @@ data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, 
 
 data class GameStarted(override val on: LocalDateTime) : Event()
 
-data class Wounded(override val on: LocalDateTime, val survivor: String): Event()
+data class SurvivorWounded(override val on: LocalDateTime, val survivor: String): Event()
+
+data class SurvivorDied(override val on: LocalDateTime, val survivor: String): Event()
