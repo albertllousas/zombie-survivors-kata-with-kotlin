@@ -1,7 +1,11 @@
 package kata
 
+import java.time.LocalDateTime
+
 sealed interface GameError
 
-sealed interface Event
+sealed class Event {
+    abstract val on: LocalDateTime
+}
 
-sealed interface SurvivorEvent: Event
+data class GameStarted(override val on: LocalDateTime) : Event()
