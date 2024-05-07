@@ -73,5 +73,5 @@ data class Survivor(
         experience in 19..42 -> Level.ORANGE
         experience > 42 -> Level.RED
         else -> level
-    }.let { this.copy(level = it) }
+    }.let { this.copy(level = it, events = events + SurvivorLeveledUp(now(clock), this.name, it)) }
 }

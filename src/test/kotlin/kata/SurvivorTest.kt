@@ -148,6 +148,9 @@ class SurvivorTest {
         val result = survivor.killZombie()
 
         result.level shouldBe YELLOW
+        result.events shouldBe listOf(
+            SurvivorLeveledUp(on = parse("2007-12-03T10:15:30.00"), survivor = "Max Ryder", level = YELLOW)
+        )
     }
 
     @Test

@@ -15,3 +15,6 @@ data class GameStarted(override val on: LocalDateTime) : Event()
 data class SurvivorWounded(override val on: LocalDateTime, val survivor: String): Event()
 
 data class SurvivorDied(override val on: LocalDateTime, val survivor: String): Event()
+
+data class SurvivorLeveledUp(override val on: LocalDateTime, val survivor: String, val level: Level): Event()
+
