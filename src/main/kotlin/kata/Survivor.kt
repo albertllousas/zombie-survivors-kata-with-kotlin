@@ -7,6 +7,8 @@ import kata.Equipment.InHand
 import kata.Equipment.InReserve
 import kata.Status.ALIVE
 import kata.Status.DEAD
+import java.time.Clock
+import java.time.LocalDateTime
 
 enum class Status {
     ALIVE, DEAD
@@ -30,6 +32,8 @@ data class Survivor(
     val numOfItemsCanCarry: Int = 5,
     val experience: Int = 0,
     val level: Level = Level.BLUE,
+    val events: List<Event> = emptyList(),
+    val clock: Clock = Clock.systemUTC(),
 ) {
 
     fun applyWound(): Survivor = when {
@@ -44,7 +48,10 @@ data class Survivor(
     fun equip(equipment: Equipment): Either<EquipError, Survivor> = when {
         equippedWith.count().inc() > numOfItemsCanCarry -> MaxEquipmentCapacityReached.left()
         equippedWith.count { it.location == InHand } >= 2 -> MaxEquipmentInHandReached.left()
-        else -> this.copy(equippedWith = equippedWith + equipment).right()
+        else -> this.copy(
+            equippedWith = equippedWith + equipment,
+            events = events + EquipmentAdded(LocalDateTime.now(clock), this.name, equipment.name)
+        ).right()
     }
 
     private fun discardItemIfMaxCapacityReached() = if (numOfItemsCanCarry < this.equippedWith.size) {

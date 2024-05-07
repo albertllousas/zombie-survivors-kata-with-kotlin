@@ -7,7 +7,6 @@ import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
 import kata.Level.*
-import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
@@ -32,7 +31,7 @@ class GameTest {
     @Test
     fun `should be able to add survivors to it at any time`() {
         val game = Game.start(fixedClock)
-        val survivor = Survivor("Maverick Steel")
+        val survivor = Survivor("Maverick Steel", clock = fixedClock)
 
         val result = game.add(survivor)
 
@@ -43,7 +42,7 @@ class GameTest {
     @Test
     fun `should ensure survivor names within a game are unique`() {
         val game = Game.start()
-        val survivor = Survivor("Maverick Steel")
+        val survivor = Survivor("Maverick Steel", clock = fixedClock)
 
         val result = game.add(survivor).flatMap { it.add(survivor) }
 
@@ -52,7 +51,7 @@ class GameTest {
 
     @Test
     fun `should end immediately if all of its survivors have died`() {
-        val survivor = Survivor("Maverick Steel", wounds = 1)
+        val survivor = Survivor("Maverick Steel", wounds = 1, clock = fixedClock)
         val game = Game(survivors = listOf(survivor), status = ONGOING, clock = fixedClock)
 
         val result = game.runTurn("Maverick Steel") { it.applyWound().right() }
@@ -63,7 +62,7 @@ class GameTest {
 
     @Test
     fun `should check that level equals to the level of the highest living survivor's one when they level-up`() {
-        val survivor = Survivor("Max Ryder", experience = 6)
+        val survivor = Survivor("Max Ryder", experience = 6, clock = fixedClock)
         val game = Game(survivors = listOf(survivor), status = ONGOING, level = BLUE, clock = fixedClock)
 
         val result = game.runTurn("Max Ryder") { it.killZombie().right() }
@@ -76,8 +75,8 @@ class GameTest {
     fun `should check that level equals to the level of the highest living survivor's one when they join`() {
        val game = Game.start()
 
-        val result = game.add(Survivor("Maverick Steel", level = YELLOW))
-            .flatMap { it.add(Survivor("Max Ryder", level = RED)) }
+        val result = game.add(Survivor("Maverick Steel", level = YELLOW, clock = fixedClock))
+            .flatMap { it.add(Survivor("Max Ryder", level = RED, clock = fixedClock)) }
 
         result.isRight() shouldBe true
         result.onRight { it.level shouldBe RED }
