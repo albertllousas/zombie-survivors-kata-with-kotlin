@@ -29,7 +29,7 @@ data class Game(
 
     fun add(survivor: Survivor): Either<SurvivorNameAlreadyUsed, Game> =
         if (survivors.firstOrNull { it.name == survivor.name } != null) SurvivorNameAlreadyUsed.left()
-        else this.copy(survivors = survivors + survivor).right()
+        else this.copy(survivors = survivors + survivor).let { it.adjustLevel() }.right()
 
     fun runTurn(survivorName: String, actionOn: (Survivor) -> Either<GameError, Survivor>): Either<GameError, Game> =
         survivors.find { it.name == survivorName }

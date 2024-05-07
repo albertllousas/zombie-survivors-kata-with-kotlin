@@ -6,8 +6,7 @@ import arrow.core.right
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
-import kata.Level.BLUE
-import kata.Level.YELLOW
+import kata.Level.*
 import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 import java.time.Clock
@@ -63,7 +62,7 @@ class GameTest {
     }
 
     @Test
-    fun `should keep the game level always equal to the level of the highest living survivor's level`() {
+    fun `should check that level equals to the level of the highest living survivor's one when they level-up`() {
         val survivor = Survivor("Max Ryder", experience = 6)
         val game = Game(survivors = listOf(survivor), status = ONGOING, level = BLUE, clock = fixedClock)
 
@@ -71,5 +70,16 @@ class GameTest {
 
         result.isRight() shouldBe true
         result.onRight { it.level shouldBe YELLOW }
+    }
+
+    @Test
+    fun `should check that level equals to the level of the highest living survivor's one when they join`() {
+       val game = Game.start()
+
+        val result = game.add(Survivor("Maverick Steel", level = YELLOW))
+            .flatMap { it.add(Survivor("Max Ryder", level = RED)) }
+
+        result.isRight() shouldBe true
+        result.onRight { it.level shouldBe RED }
     }
 }
