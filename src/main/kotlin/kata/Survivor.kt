@@ -37,12 +37,17 @@ data class Survivor(
 ) {
 
     fun applyWound(): Survivor = when {
-        wounds.inc() == 2 -> this.copy(wounds = wounds.inc(), status = DEAD)
-        wounds.inc() > 2 -> this
-        else -> this.copy(
+        wounds.inc() == 2 -> this.copy(
             wounds = wounds.inc(),
-            numOfItemsCanCarry = numOfItemsCanCarry.dec()
+            status = DEAD,
+            events = events + Wounded(LocalDateTime.now(clock), this.name)
+        )
+        wounds.inc() < 2 -> this.copy(
+            wounds = wounds.inc(),
+            numOfItemsCanCarry = numOfItemsCanCarry.dec(),
+            events = events + Wounded(LocalDateTime.now(clock), this.name)
         ).discardItemIfMaxCapacityReached()
+        else -> this
     }
 
     fun equip(equipment: Equipment): Either<EquipError, Survivor> = when {

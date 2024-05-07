@@ -11,3 +11,5 @@ sealed class Event {
 data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, val equipment: String) : Event()
 
 data class GameStarted(override val on: LocalDateTime) : Event()
+
+data class Wounded(override val on: LocalDateTime, val survivor: String): Event()

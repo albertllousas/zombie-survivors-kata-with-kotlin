@@ -42,6 +42,10 @@ class SurvivorTest {
         val woundedSurvivor = survivor.applyWound().applyWound()
 
         woundedSurvivor.status shouldBe DEAD
+        woundedSurvivor.events shouldBe listOf(
+            Wounded(on = LocalDateTime.parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
+            Wounded(on = LocalDateTime.parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel")
+        )
     }
 
     @Test
@@ -50,7 +54,6 @@ class SurvivorTest {
             name = "Maverick Steel",
             wounds = 2,
             status = DEAD,
-            numOfItemsCanCarry = 5,
             clock = fixedClock
         )
 
