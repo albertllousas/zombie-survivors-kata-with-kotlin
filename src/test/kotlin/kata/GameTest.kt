@@ -111,6 +111,7 @@ class GameTest {
                 SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
                 SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
                 SurvivorDied(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
+                GameEnded(on = parse("2007-12-03T10:15:30"))
             )
             it.survivors.first().events shouldBe emptyList()
         }

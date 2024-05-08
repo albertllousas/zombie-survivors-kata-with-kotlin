@@ -56,7 +56,9 @@ data class Game(
     }
 
     private fun adjustStatus() =
-        if (this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this
+        if (this.survivors.all { it.status == Status.DEAD })
+            this.copy(status = ENDED, history = history + GameEnded(now(clock)))
+        else this
 
     companion object {
         fun start(clock: Clock = Clock.systemUTC()): Game = Game(

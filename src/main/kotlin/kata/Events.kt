@@ -14,6 +14,8 @@ data class GameLeveledUp(override val on: LocalDateTime, val level: Level): Game
 
 data class SurvivorAdded(override val on: LocalDateTime, val survivor: String) : GameEvent()
 
+data class GameEnded(override val on: LocalDateTime) : GameEvent()
+
 sealed class SurvivorEvent : GameEvent()
 
 data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, val equipment: String) : SurvivorEvent()
