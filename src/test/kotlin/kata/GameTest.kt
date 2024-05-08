@@ -3,6 +3,7 @@ package kata
 import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalDateTime.*
 import java.time.ZoneId
 
 class GameTest {
@@ -26,7 +28,7 @@ class GameTest {
             status = ONGOING,
             level = BLUE,
             clock = fixedClock,
-            history = listOf(GameStarted(on = LocalDateTime.parse("2007-12-03T10:15:30.00"))),
+            history = listOf(GameStarted(on = parse("2007-12-03T10:15:30.00"))),
         )
     }
 
@@ -38,7 +40,10 @@ class GameTest {
         val result = game.add(survivor)
 
         result.isRight() shouldBe true
-        result.onRight { it.survivors shouldBe listOf(survivor) }
+        result.onRight {
+            it.survivors shouldBe listOf(survivor)
+            it.history shouldContain SurvivorAdded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel")
+        }
     }
 
     @Test

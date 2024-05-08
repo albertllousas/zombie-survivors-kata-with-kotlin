@@ -8,16 +8,20 @@ sealed class Event {
     abstract val on: LocalDateTime
 }
 
-data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, val equipment: String) : Event()
-
-data class EquipmentDiscarded(override val on: LocalDateTime, val survivor: String, val equipment: String) : Event()
-
 data class GameStarted(override val on: LocalDateTime) : Event()
 
-data class SurvivorWounded(override val on: LocalDateTime, val survivor: String): Event()
+data class SurvivorAdded(override val on: LocalDateTime, val survivor: String) : Event()
 
-data class SurvivorDied(override val on: LocalDateTime, val survivor: String): Event()
+sealed class SurvivorEvent : Event()
 
-data class SurvivorLeveledUp(override val on: LocalDateTime, val survivor: String, val level: Level): Event()
+data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, val equipment: String) : SurvivorEvent()
 
-data class ZombieKilled(override val on: LocalDateTime, val by: String): Event()
+data class EquipmentDiscarded(override val on: LocalDateTime, val survivor: String, val equipment: String) : SurvivorEvent()
+
+data class SurvivorWounded(override val on: LocalDateTime, val survivor: String): SurvivorEvent()
+
+data class SurvivorDied(override val on: LocalDateTime, val survivor: String): SurvivorEvent()
+
+data class SurvivorLeveledUp(override val on: LocalDateTime, val survivor: String, val level: Level): SurvivorEvent()
+
+data class ZombieKilled(override val on: LocalDateTime, val by: String): SurvivorEvent()
