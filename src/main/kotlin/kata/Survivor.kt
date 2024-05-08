@@ -73,7 +73,10 @@ data class Survivor(
             )
         } else this
 
-    fun killZombie(): Survivor = this.copy(experience = experience.inc()).let { it.levelUp() }
+    fun killZombie(): Survivor = this.copy(
+        experience = experience.inc(),
+        events = events + ZombieKilled(on = now(clock), by = this.name)
+    ).let { it.levelUp() }
 
     private fun levelUp() = when {
         experience in 7..18 -> Level.YELLOW

@@ -20,3 +20,4 @@ data class SurvivorDied(override val on: LocalDateTime, val survivor: String): E
 
 data class SurvivorLeveledUp(override val on: LocalDateTime, val survivor: String, val level: Level): Event()
 
+data class ZombieKilled(override val on: LocalDateTime, val by: String): Event()

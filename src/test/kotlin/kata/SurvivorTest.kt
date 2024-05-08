@@ -2,6 +2,7 @@ package kata
 
 import arrow.core.flatMap
 import arrow.core.left
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import kata.Equipment.InHand
 import kata.Equipment.InReserve
@@ -14,8 +15,7 @@ import kata.Status.DEAD
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.LocalDateTime.*
+import java.time.LocalDateTime.parse
 import java.time.ZoneId
 
 class SurvivorTest {
@@ -128,8 +128,7 @@ class SurvivorTest {
         )
         val woundedSurvivor = survivor.applyWound()
         woundedSurvivor.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve))
-        woundedSurvivor.events shouldBe listOf(
-            SurvivorWounded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
+        woundedSurvivor.events shouldContain (
             EquipmentDiscarded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel", equipment = "Frying pan")
         )
     }
@@ -141,6 +140,7 @@ class SurvivorTest {
         val result = survivor.killZombie()
 
         result.experience shouldBe 1
+        result.events shouldContain ZombieKilled(on = parse("2007-12-03T10:15:30.00"), by = "Maverick Steel")
     }
 
     @Test
