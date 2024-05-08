@@ -8,13 +8,13 @@ import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
 import kata.Level.BLUE
+import kata.Level.ORANGE
 import kata.Level.RED
 import kata.Level.YELLOW
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.LocalDateTime.*
+import java.time.LocalDateTime.parse
 import java.time.ZoneId
 
 class GameTest {
@@ -87,5 +87,31 @@ class GameTest {
 
         result.isRight() shouldBe true
         result.onRight { it.level shouldBe RED }
+    }
+
+    @Test
+    fun `should record any survivor event on the running history`() {
+        val game = Game.start(fixedClock)
+        val survivor = Survivor("Maverick", level = YELLOW, clock = fixedClock)
+
+        val result = game.add(survivor)
+            .flatMap { it.runTurn("Maverick") { survivor -> survivor.equip(Equipment("Bottle", Equipment.InHand)) } }
+            .flatMap { it.runTurn("Maverick") { survivor -> survivor.killZombie().right() } }
+            .flatMap { it.runTurn("Maverick") { survivor -> survivor.applyWound().applyWound().right() } }
+
+        result.isRight() shouldBe true
+        result.onRight {
+            it.history shouldBe listOf(
+                GameStarted(on = parse("2007-12-03T10:15:30")),
+                SurvivorAdded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
+                EquipmentAdded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick", equipment = "Bottle"),
+                ZombieKilled(on = parse("2007-12-03T10:15:30"), by = "Maverick"),
+                SurvivorLeveledUp(on = parse("2007-12-03T10:15:30"), survivor = "Maverick", level = YELLOW),
+                SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
+                SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
+                SurvivorDied(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
+            )
+            it.survivors.first().events shouldBe emptyList()
+        }
     }
 }

@@ -36,7 +36,13 @@ data class Game(
         survivors.find { it.name == survivorName }
             ?.let { old ->
                 actionOn(old)
-                    .map { updated -> this.copy(survivors = survivors.map { if (old.name == it.name) updated else old }) }
+                    .map { it.getAndClearEvents() }
+                    .map { (events, updated) ->
+                        this.copy(
+                            survivors = survivors.map { if (old.name == it.name) updated else old },
+                            history = history + events,
+                        )
+                    }
             }
             ?.map { it.adjustStatus() }
             ?.map { it.adjustLevel() }
