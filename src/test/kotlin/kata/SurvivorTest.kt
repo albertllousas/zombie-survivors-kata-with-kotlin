@@ -127,8 +127,10 @@ class SurvivorTest {
             clock = fixedClock
         )
         val woundedSurvivor = survivor.applyWound()
-        woundedSurvivor.equippedWith shouldBe listOf(
-            Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve)
+        woundedSurvivor.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve))
+        woundedSurvivor.events shouldBe listOf(
+            SurvivorWounded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel"),
+            EquipmentDiscarded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel", equipment = "Frying pan")
         )
     }
 

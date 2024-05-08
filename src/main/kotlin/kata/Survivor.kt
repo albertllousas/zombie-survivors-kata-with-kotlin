@@ -8,8 +8,7 @@ import kata.Equipment.InReserve
 import kata.Status.ALIVE
 import kata.Status.DEAD
 import java.time.Clock
-import java.time.LocalDateTime
-import java.time.LocalDateTime.*
+import java.time.LocalDateTime.now
 
 enum class Status {
     ALIVE, DEAD
@@ -43,11 +42,13 @@ data class Survivor(
             status = DEAD,
             events = events + SurvivorWounded(now(clock), this.name) + SurvivorDied(now(clock), this.name)
         )
+
         wounds.inc() < 2 -> this.copy(
             wounds = wounds.inc(),
             numOfItemsCanCarry = numOfItemsCanCarry.dec(),
             events = events + SurvivorWounded(now(clock), this.name)
         ).discardItemIfMaxCapacityReached()
+
         else -> this
     }
 
@@ -60,11 +61,17 @@ data class Survivor(
         ).right()
     }
 
-    private fun discardItemIfMaxCapacityReached() = if (numOfItemsCanCarry < this.equippedWith.size) {
-        val firstInReserve = equippedWith.firstOrNull { it.location == InReserve }
-        val filteredList = firstInReserve?.let { equippedWith.filterNot { it == firstInReserve } } ?: equippedWith
-        this.copy(equippedWith = filteredList)
-    } else this
+    private fun discardItemIfMaxCapacityReached() =
+        if (numOfItemsCanCarry < this.equippedWith.size) {
+            val firstInReserve = equippedWith.firstOrNull { it.location == InReserve }
+            val filteredList = firstInReserve?.let { equippedWith.filterNot { it == firstInReserve } } ?: equippedWith
+            this.copy(
+                equippedWith = filteredList,
+                events = firstInReserve
+                    ?.let { events + EquipmentDiscarded(now(clock), this.name, firstInReserve.name) }
+                    ?: events
+            )
+        } else this
 
     fun killZombie(): Survivor = this.copy(experience = experience.inc()).let { it.levelUp() }
 
