@@ -4,15 +4,17 @@ import java.time.LocalDateTime
 
 sealed interface GameError
 
-sealed class Event {
+sealed class GameEvent {
     abstract val on: LocalDateTime
 }
 
-data class GameStarted(override val on: LocalDateTime) : Event()
+data class GameStarted(override val on: LocalDateTime) : GameEvent()
 
-data class SurvivorAdded(override val on: LocalDateTime, val survivor: String) : Event()
+data class GameLeveledUp(override val on: LocalDateTime, val level: Level): GameEvent()
 
-sealed class SurvivorEvent : Event()
+data class SurvivorAdded(override val on: LocalDateTime, val survivor: String) : GameEvent()
+
+sealed class SurvivorEvent : GameEvent()
 
 data class EquipmentAdded(override val on: LocalDateTime, val survivor: String, val equipment: String) : SurvivorEvent()
 

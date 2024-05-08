@@ -8,6 +8,7 @@ import kata.GameStatus.ONGOING
 import kata.Level.BLUE
 import java.time.Clock
 import java.time.LocalDateTime.now
+import java.time.LocalDateTime.parse
 
 enum class GameStatus {
     ONGOING, ENDED
@@ -24,7 +25,7 @@ data class Game(
     val status: GameStatus,
     val level: Level = BLUE,
     val clock: Clock = Clock.systemUTC(),
-    val history: List<Event> = emptyList(),
+    val history: List<GameEvent> = emptyList(),
 ) {
 
     fun add(survivor: Survivor): Either<SurvivorNameAlreadyUsed, Game> =
@@ -48,7 +49,11 @@ data class Game(
             ?.map { it.adjustLevel() }
             ?: this.right()
 
-    private fun adjustLevel() = this.copy(level = this.survivors.maxByOrNull { it.level.ordinal }?.level ?: BLUE)
+    private fun adjustLevel(): Game {
+        val newLevel = this.survivors.maxByOrNull { it.level.ordinal }?.level ?: BLUE
+        val newEvents = if(newLevel != level) listOf(GameLeveledUp(now(clock), newLevel)) else emptyList()
+        return this.copy(level = newLevel, history = history + newEvents)
+    }
 
     private fun adjustStatus() =
         if (this.survivors.all { it.status == Status.DEAD }) this.copy(status = ENDED) else this

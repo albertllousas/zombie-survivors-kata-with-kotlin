@@ -90,9 +90,9 @@ class GameTest {
     }
 
     @Test
-    fun `should record any survivor event on the running history`() {
+    fun `should record any event on the running history`() {
         val game = Game.start(fixedClock)
-        val survivor = Survivor("Maverick", level = YELLOW, clock = fixedClock)
+        val survivor = Survivor("Maverick", clock = fixedClock, experience = 6)
 
         val result = game.add(survivor)
             .flatMap { it.runTurn("Maverick") { survivor -> survivor.equip(Equipment("Bottle", Equipment.InHand)) } }
@@ -107,6 +107,7 @@ class GameTest {
                 EquipmentAdded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick", equipment = "Bottle"),
                 ZombieKilled(on = parse("2007-12-03T10:15:30"), by = "Maverick"),
                 SurvivorLeveledUp(on = parse("2007-12-03T10:15:30"), survivor = "Maverick", level = YELLOW),
+                GameLeveledUp(on = parse("2007-12-03T10:15:30"), level = YELLOW),
                 SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
                 SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),
                 SurvivorDied(on = parse("2007-12-03T10:15:30"), survivor = "Maverick"),

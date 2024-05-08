@@ -32,7 +32,7 @@ data class Survivor(
     val numOfItemsCanCarry: Int = 5,
     val experience: Int = 0,
     val level: Level = Level.BLUE,
-    val events: List<Event> = emptyList(),
+    val events: List<GameEvent> = emptyList(),
     val clock: Clock = Clock.systemUTC(),
 ) {
 
@@ -83,7 +83,10 @@ data class Survivor(
         experience in 19..42 -> Level.ORANGE
         experience > 42 -> Level.RED
         else -> level
-    }.let { this.copy(level = it, events = events + SurvivorLeveledUp(now(clock), this.name, it)) }
+    }.let {
+        val newEvents = if(it != level) listOf(SurvivorLeveledUp(now(clock), this.name, it)) else emptyList()
+        this.copy(level = it, events = events + newEvents)
+    }
 
-    fun getAndClearEvents(): Pair<List<Event>, Survivor> = Pair(events, this.copy(events = emptyList()))
+    fun getAndClearEvents(): Pair<List<GameEvent>, Survivor> = Pair(events, this.copy(events = emptyList()))
 }
