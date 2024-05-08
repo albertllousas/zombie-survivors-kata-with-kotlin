@@ -84,4 +84,6 @@ data class Survivor(
         experience > 42 -> Level.RED
         else -> level
     }.let { this.copy(level = it, events = events + SurvivorLeveledUp(now(clock), this.name, it)) }
+
+    fun getAndClearEvents(): Pair<List<Event>, Survivor> = Pair(events, this.copy(events = emptyList()))
 }

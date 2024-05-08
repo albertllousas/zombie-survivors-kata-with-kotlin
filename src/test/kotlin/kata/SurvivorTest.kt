@@ -129,8 +129,12 @@ class SurvivorTest {
         val woundedSurvivor = survivor.applyWound()
         woundedSurvivor.equippedWith shouldBe listOf(Equipment("Baseball bat", InHand), Equipment("Molotov", InReserve))
         woundedSurvivor.events shouldContain (
-            EquipmentDiscarded(on = parse("2007-12-03T10:15:30.00"), survivor = "Maverick Steel", equipment = "Frying pan")
-        )
+                EquipmentDiscarded(
+                    on = parse("2007-12-03T10:15:30.00"),
+                    survivor = "Maverick Steel",
+                    equipment = "Frying pan"
+                )
+                )
     }
 
     @Test
@@ -171,5 +175,18 @@ class SurvivorTest {
         val result = survivor.killZombie()
 
         result.level shouldBe RED
+    }
+
+    @Test
+    fun `should get and clear events`() {
+        val survivor = Survivor("Max Ryder", experience = 40, clock = fixedClock)
+        val result = survivor.applyWound().killZombie().getAndClearEvents()
+        result.first shouldBe
+                listOf(
+                    SurvivorWounded(on = parse("2007-12-03T10:15:30"), survivor = "Max Ryder"),
+                    ZombieKilled(on = parse("2007-12-03T10:15:30"), by = "Max Ryder"),
+                    SurvivorLeveledUp(on = parse("2007-12-03T10:15:30"), survivor = "Max Ryder", level = ORANGE)
+                )
+        result.second.events shouldBe emptyList()
     }
 }

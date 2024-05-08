@@ -6,7 +6,9 @@ import arrow.core.right
 import io.kotest.matchers.shouldBe
 import kata.GameStatus.ENDED
 import kata.GameStatus.ONGOING
-import kata.Level.*
+import kata.Level.BLUE
+import kata.Level.RED
+import kata.Level.YELLOW
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
@@ -36,7 +38,7 @@ class GameTest {
         val result = game.add(survivor)
 
         result.isRight() shouldBe true
-        result.onRight {  it.survivors shouldBe listOf(survivor) }
+        result.onRight { it.survivors shouldBe listOf(survivor) }
     }
 
     @Test
@@ -57,7 +59,7 @@ class GameTest {
         val result = game.runTurn("Maverick Steel") { it.applyWound().right() }
 
         result.isRight() shouldBe true
-        result.onRight {  it.status shouldBe ENDED }
+        result.onRight { it.status shouldBe ENDED }
     }
 
     @Test
@@ -73,7 +75,7 @@ class GameTest {
 
     @Test
     fun `should check that level equals to the level of the highest living survivor's one when they join`() {
-       val game = Game.start()
+        val game = Game.start()
 
         val result = game.add(Survivor("Maverick Steel", level = YELLOW, clock = fixedClock))
             .flatMap { it.add(Survivor("Max Ryder", level = RED, clock = fixedClock)) }
